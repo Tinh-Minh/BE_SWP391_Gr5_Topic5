@@ -1,53 +1,41 @@
 package org.group5.springmvcweb.glassesweb.Controller;
 
+import jakarta.validation.Valid;
+import org.group5.springmvcweb.glassesweb.DTO.LoginRequest;
+import org.group5.springmvcweb.glassesweb.DTO.LoginResponse;
 import org.group5.springmvcweb.glassesweb.Entity.Account;
 import org.group5.springmvcweb.glassesweb.Repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-import jakarta.servlet.http.HttpSession;
-
-@Controller
+@RestController
+@RequestMapping("/api/auth")
+@CrossOrigin(origins = "http://localhost:3000")
 public class AuthController {
 
     @Autowired
     private AccountRepository accountRepository;
 
-    @GetMapping("/login")
-    public String showLoginPage() {
-        return "login";  // trả về templates/login.html
-    }
-
     @PostMapping("/login")
-    public String login(@RequestParam("username") String username,
-                        @RequestParam("password") String password,
-                        Model model,
-                        HttpSession session) {  // thêm session để lưu user nếu cần
-        Account account = accountRepository.findByUsername(username);
+    public ResponseEntity<?> login(
+            @Valid @RequestBody LoginRequest request) {
 
-        if (account != null && account.getPasswordHash().equals(password)) {  // so sánh plain text
-            // Lưu thông tin user vào session (tùy chọn, để dùng sau)
-            session.setAttribute("loggedInUser", account);
-            model.addAttribute("username", username);
-            return "redirect:/home";
-        } else {
-            model.addAttribute("error", "Tên đăng nhập hoặc mật khẩu không đúng");
-            return "login";
+        Account account = accountRepository.findByUsername(request.getIdentifier());
+
+        if (account == null) {
+            return ResponseEntity.status(401).body("Sai tài khoản hoặc mật khẩu");
         }
-    }
 
-    @GetMapping("/home")
-    public String home() {
-        return "home";  // templates/home.html
-    }
+        if (!account.getPasswordHash().equals(request.getPassword())) {
+            return ResponseEntity.status(401).body("Sai tài khoản hoặc mật khẩu");
+        }
 
-    @GetMapping("/logout")
-    public String logout(HttpSession session) {
-        session.invalidate();  // xóa session để logout hoàn toàn
-        return "redirect:/login";
+        return ResponseEntity.ok(
+                new LoginResponse(
+                        account.getUsername(),
+                        account.getRole()
+                )
+        );
     }
 }
