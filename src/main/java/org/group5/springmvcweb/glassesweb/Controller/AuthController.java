@@ -18,7 +18,8 @@ public class AuthController {
     private AccountRepository accountRepository;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request) {
+    public ResponseEntity<?> login(
+            @Valid @RequestBody LoginRequest request) {
 
         Account account = accountRepository.findByUsername(request.getIdentifier());
 
