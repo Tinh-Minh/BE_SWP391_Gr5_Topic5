@@ -19,13 +19,10 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request) {
-
         Account account = accountRepository.findByUsername(request.getIdentifier());
-
         if (account == null) {
             return ResponseEntity.status(401).body("Sai tài khoản hoặc mật khẩu");
         }
-
         if (!account.getPasswordHash().equals(request.getPassword())) {
             return ResponseEntity.status(401).body("Sai tài khoản hoặc mật khẩu");
         }
