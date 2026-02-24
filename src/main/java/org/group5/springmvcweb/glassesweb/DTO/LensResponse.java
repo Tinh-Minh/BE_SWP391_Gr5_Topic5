@@ -1,0 +1,24 @@
+package org.group5.springmvcweb.glassesweb.DTO;
+
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class LensResponse {
+
+    private Integer lensId;
+    private String brand;
+    private String lensType;
+    private BigDecimal basePrice;
+    private BigDecimal minSph;
+    private BigDecimal maxSph;
+
+}
