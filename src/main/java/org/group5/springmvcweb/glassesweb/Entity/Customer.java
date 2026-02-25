@@ -19,8 +19,7 @@ import lombok.NoArgsConstructor;
 public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-
+    private int customer_id;
 
     // Tên không được null và không được rỗng
     @NotBlank(message = "Name không được để trống")
