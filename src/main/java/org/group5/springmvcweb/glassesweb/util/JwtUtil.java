@@ -1,9 +1,9 @@
-package org.group5.springmvcweb.glassesweb.security;
+package org.group5.springmvcweb.glassesweb.util;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Component;
-import javax.crypto.SecretKey;
+
 import java.security.Key;
 import java.util.Date;
 

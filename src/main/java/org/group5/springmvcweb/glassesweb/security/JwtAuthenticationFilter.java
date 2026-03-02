@@ -2,6 +2,7 @@ package org.group5.springmvcweb.glassesweb.security;
 
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
+import org.group5.springmvcweb.glassesweb.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

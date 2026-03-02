@@ -5,7 +5,7 @@ import org.group5.springmvcweb.glassesweb.Entity.Account;
 import org.group5.springmvcweb.glassesweb.Entity.Customer;
 import org.group5.springmvcweb.glassesweb.Repository.AccountRepository;
 import org.group5.springmvcweb.glassesweb.Repository.CustomerRepository;
-import org.group5.springmvcweb.glassesweb.security.JwtUtil;
+import org.group5.springmvcweb.glassesweb.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;

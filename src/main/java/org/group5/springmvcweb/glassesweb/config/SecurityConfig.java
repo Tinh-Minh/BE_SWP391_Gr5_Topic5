@@ -1,5 +1,6 @@
-package org.group5.springmvcweb.glassesweb.security;
+package org.group5.springmvcweb.glassesweb.config;
 
+import org.group5.springmvcweb.glassesweb.security.JwtAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
 import org.springframework.security.authentication.AuthenticationManager;
