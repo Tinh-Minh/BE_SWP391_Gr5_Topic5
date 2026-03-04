@@ -37,9 +37,11 @@ public class FrameController {
         return frames.stream().map(FrameResponse::fromEntity).toList();
     }
 
-    @PutMapping("/update")
-    public FrameResponse updateFrame(@RequestBody UpdateFrameRequest request){
-        Frame frame = frameService.updateFrame(request);
+    @PutMapping("/update/{id}")
+    public FrameResponse updateFrame(
+        @PathVariable Integer id,
+        @RequestBody UpdateFrameRequest request){
+        Frame frame = frameService.updateFrame(id, request);
         return FrameResponse.fromEntity(frame);
     }
 
@@ -50,3 +52,4 @@ public class FrameController {
     }
 
 }
+
