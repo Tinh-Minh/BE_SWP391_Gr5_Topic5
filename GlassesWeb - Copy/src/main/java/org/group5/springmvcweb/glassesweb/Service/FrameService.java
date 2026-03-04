@@ -39,9 +39,9 @@ public class FrameService {
     }
 
     //Update
-    public Frame updateFrame(UpdateFrameRequest request){
+    public Frame updateFrame(Integer id, UpdateFrameRequest request){
         //Tìm frame DB
-        Frame frame = frameRepository.findById(request.getFrameId())
+        Frame frame = frameRepository.findById(id)
                 .orElseThrow(()-> new RuntimeException("Frame Not Found"));
 
         //Set dữ liệu mới
@@ -62,3 +62,4 @@ public class FrameService {
         frameRepository.deleteById(id);
     }
 }
+
