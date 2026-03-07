@@ -50,7 +50,7 @@ public class AuthService {
 
         // 1. Kiểm tra username đã tồn tại chưa
         if (accountRepository.existsByUsername(request.getUsername())) {
-            throw new RuntimeException("Username đã tồn tại!");
+            throw new RuntimeException("Username already exists!");
         }
 
         // 2. Kiểm tra email đã tồn tại chưa
@@ -86,7 +86,7 @@ public class AuthService {
 
     public void updateRole(Integer accountId, String newRole) {
 
-        // Kiểm tra role hợp lệ
+        // Kiểm tra role hợp lệ hay không
         List<String> validRoles = List.of("USER", "ADMIN", "STAFF", "OPERATION");
         if (!validRoles.contains(newRole)) {
             throw new RuntimeException("Role not valid!");

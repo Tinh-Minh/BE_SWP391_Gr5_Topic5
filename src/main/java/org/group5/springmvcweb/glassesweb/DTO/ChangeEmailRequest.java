@@ -8,6 +8,6 @@ import lombok.Data;
 public class ChangeEmailRequest {
 
     @NotBlank
-    @Email(message = "Email không hợp lệ")
+    @Email(message = "Email not valid")
     private String newEmail;
 }

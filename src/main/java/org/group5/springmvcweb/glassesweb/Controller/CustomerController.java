@@ -24,26 +24,26 @@ public class CustomerController {
             @RequestBody UpdateProfileRequest request) {
 
         customerService.updateProfile(authentication.getName(), request);
-        return ResponseEntity.ok(Map.of("message", "Cập nhật thông tin thành công!"));
+        return ResponseEntity.ok(Map.of("message", "Profile update successful!"));
     }
 
-    // Đổi email
+    // Đổi email (vì là thông tin nhạy cảm nên cần xác thực password)
     @PutMapping("/change-email")
     public ResponseEntity<Map<String, String>> changeEmail(
             Authentication authentication,
             @Valid @RequestBody ChangeEmailRequest request) {
 
         customerService.changeEmail(authentication.getName(), request);
-        return ResponseEntity.ok(Map.of("message", "Đổi email thành công!"));
+        return ResponseEntity.ok(Map.of("message", "Change Email successful!"));
     }
 
-    // Đổi password
+    // Đổi password (để đảm bảo an toàn, yêu cầu nhập password cũ)
     @PutMapping("/change-password")
     public ResponseEntity<Map<String, String>> changePassword(
             Authentication authentication,
             @Valid @RequestBody ChangePasswordRequest request) {
 
         customerService.changePassword(authentication.getName(), request);
-        return ResponseEntity.ok(Map.of("message", "Đổi password thành công!"));
+        return ResponseEntity.ok(Map.of("message", "Change PassWord successful!"));
     }
 }

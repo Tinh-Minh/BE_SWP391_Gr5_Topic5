@@ -19,6 +19,7 @@ public class AdminController {
     private AuthService authService;
     private CustomerService customerService;
 
+    //admin update role cho bất kỳ ai
     @PutMapping("/accounts/{id}/role")
     public ResponseEntity<Map<String, String>> updateRole(
             @PathVariable Integer id,
@@ -33,6 +34,6 @@ public class AdminController {
             @RequestBody UpdateProfileRequest request) {
 
         customerService.adminUpdateProfile(id, request);
-        return ResponseEntity.ok(Map.of("message", "Cập nhật thông tin thành công!"));
+        return ResponseEntity.ok(Map.of("message", "Profile update successful!"));
     }
 }

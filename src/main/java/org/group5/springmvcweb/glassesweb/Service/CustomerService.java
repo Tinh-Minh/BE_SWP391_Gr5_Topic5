@@ -25,9 +25,9 @@ public class CustomerService {
     // ===== Lấy thông tin Customer từ username =====
     private Customer getCustomerByUsername(String username) {
         Account account = accountRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("Account không tồn tại!"));
+                .orElseThrow(() -> new RuntimeException("Account not exist!"));
         return customerRepository.findById(account.getCustomerId())
-                .orElseThrow(() -> new RuntimeException("Customer không tồn tại!"));
+                .orElseThrow(() -> new RuntimeException("Customer not exist!"));
     }
 
     // ===== Cập nhật thông tin cá nhân =====
@@ -49,7 +49,7 @@ public class CustomerService {
 
         // Kiểm tra email mới đã tồn tại chưa
         if (customerRepository.existsByEmail(request.getNewEmail())) {
-            throw new RuntimeException("Email đã tồn tại!");
+            throw new RuntimeException("Email already exists!");
         }
 
         customer.setEmail(request.getNewEmail());
@@ -60,11 +60,11 @@ public class CustomerService {
     @Transactional
     public void changePassword(String username, ChangePasswordRequest request) {
         Account account = accountRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("Account không tồn tại!"));
+                .orElseThrow(() -> new RuntimeException("Account not exist!"));
 
         // Kiểm tra password cũ đúng không
         if (!passwordEncoder.matches(request.getOldPassword(), account.getPasswordHash())) {
-            throw new RuntimeException("Password cũ không đúng!");
+            throw new RuntimeException(" old Password is wrong!");
         }
 
         account.setPasswordHash(passwordEncoder.encode(request.getNewPassword()));
@@ -75,7 +75,7 @@ public class CustomerService {
     @Transactional
     public void adminUpdateProfile(Integer customerId, UpdateProfileRequest request) {
         Customer customer = customerRepository.findById(customerId)
-                .orElseThrow(() -> new RuntimeException("Customer không tồn tại!"));
+                .orElseThrow(() -> new RuntimeException("Customer not exist!"));
 
         if (request.getName() != null) customer.setName(request.getName());
         if (request.getPhone() != null) customer.setPhone(request.getPhone());
