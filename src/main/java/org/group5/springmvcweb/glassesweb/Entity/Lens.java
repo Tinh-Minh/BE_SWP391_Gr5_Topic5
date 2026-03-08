@@ -22,19 +22,19 @@ public class Lens {
     @Column(name = "lens_id")
     private Integer lensId;
 
-    @Column(name = "brand")
+    @Column(name = "brand", nullable = false)
     private String brand;
 
-    @Column(name = "lens_type")
+    @Column(name = "lens_type", nullable = false)
     private String lensType;
 
-    @Column(name = "min_sph")
+    @Column(name = "min_sph",  precision = 5, scale = 2)
     private BigDecimal minSph;
 
-    @Column(name = "max_sph")
+    @Column(name = "max_sph",  precision = 5, scale = 2)
     private BigDecimal maxSph;
 
-    @Column(name = "base_price")
+    @Column(name = "base_price", nullable = false, precision = 18, scale = 2)
     private BigDecimal basePrice;
 
 }
