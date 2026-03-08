@@ -19,7 +19,7 @@ public class ReadyMadeGlasses {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ready_glasses_id")
-    private Integer readyGlassesId;
+    private String readyGlassesId;
 
     @Column(name = "frame_id")
     private Integer frameId;
