@@ -21,19 +21,19 @@ public class Frame {
     @Column(name = "frame_id")
     private Integer frameId;
 
-    @Column(name = "brand")
+    @Column(name = "brand", nullable = false)
     private String brand;
 
-    @Column(name = "material")
+    @Column(name = "material", nullable = false)
     private String material;
 
-    @Column(name = "size")
+    @Column(name = "size", nullable = false)
     private String size;
 
-    @Column(name = "rim_type")
+    @Column(name = "rim_type", nullable = false)
     private String rimType;
 
-    @Column(name = "price")
+    @Column(name = "price", nullable = false, precision = 18, scale = 2)
     private BigDecimal price;
 
 
