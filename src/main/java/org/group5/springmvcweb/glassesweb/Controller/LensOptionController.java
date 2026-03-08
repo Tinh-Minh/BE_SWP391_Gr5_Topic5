@@ -1,0 +1,62 @@
+package org.group5.springmvcweb.glassesweb.Controller;
+
+import jakarta.validation.Valid;
+import org.group5.springmvcweb.glassesweb.DTO.CreateLensOptionRequest;
+import org.group5.springmvcweb.glassesweb.DTO.LensOptionResponse;
+import org.group5.springmvcweb.glassesweb.DTO.UpdateLensOptionRequest;
+import org.group5.springmvcweb.glassesweb.Entity.LensOption;
+import org.group5.springmvcweb.glassesweb.Repository.LensOptionRepository;
+import org.group5.springmvcweb.glassesweb.Service.LensOptionService;
+import org.group5.springmvcweb.glassesweb.Service.LensService;
+import org.group5.springmvcweb.glassesweb.Service.impl.LensOptionServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
+
+@RestController
+@RequestMapping("/admin/lensoption")
+public class LensOptionController {
+
+    private final LensOptionService service;
+
+    public LensOptionController(LensOptionService service) {
+        this.service = service;
+    }
+
+    @PostMapping("/create")
+    public LensOptionResponse create(
+            @Valid @RequestBody CreateLensOptionRequest request) {
+        LensOption lens = service.create(request);
+        return LensOptionResponse.fromEntity(lens);
+    }
+    @GetMapping("/{id}")
+    public LensOptionResponse getById(@PathVariable Integer id) {
+        return LensOptionResponse.fromEntity(service.getById(id));
+    }
+
+    @GetMapping("/alllensoption")
+    public List<LensOptionResponse> getAll() {
+        List<LensOption> lensOptions = service.getAll();
+        return lensOptions.stream().map(LensOptionResponse::fromEntity).toList();
+    }
+
+    @PutMapping("/update/{id}")
+    public LensOptionResponse update(@PathVariable Integer id,
+                                     @Valid @RequestBody UpdateLensOptionRequest request) {
+        LensOption lensOption = service.update(id, request);
+        return LensOptionResponse.fromEntity(lensOption);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public String delete(@PathVariable Integer id) {
+        service.delete(id);
+        return "success";
+    }
+
+
+
+}

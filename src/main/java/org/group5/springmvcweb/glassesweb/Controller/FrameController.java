@@ -6,7 +6,6 @@ import org.group5.springmvcweb.glassesweb.DTO.FrameResponse;
 import org.group5.springmvcweb.glassesweb.DTO.UpdateFrameRequest;
 import org.group5.springmvcweb.glassesweb.Entity.Frame;
 import org.group5.springmvcweb.glassesweb.Service.FrameService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,8 +13,12 @@ import java.util.List;
 @RestController
 @RequestMapping("/admin/frames")
 public class FrameController {
-    @Autowired
-    private FrameService frameService;
+
+    private final FrameService frameService;
+
+    public FrameController(FrameService frameService) {
+        this.frameService = frameService;
+    }
 
     @PostMapping("/createframes")
     public FrameResponse createFrame(

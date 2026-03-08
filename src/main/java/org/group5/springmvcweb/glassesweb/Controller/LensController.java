@@ -3,12 +3,11 @@ package org.group5.springmvcweb.glassesweb.Controller;
 
 import jakarta.validation.Valid;
 import org.group5.springmvcweb.glassesweb.DTO.CreateLensRequest;
-import org.group5.springmvcweb.glassesweb.DTO.FrameResponse;
 import org.group5.springmvcweb.glassesweb.DTO.LensResponse;
 import org.group5.springmvcweb.glassesweb.DTO.UpdateLensRequest;
-import org.group5.springmvcweb.glassesweb.Entity.Frame;
 import org.group5.springmvcweb.glassesweb.Entity.Lens;
 import org.group5.springmvcweb.glassesweb.Service.LensService;
+import org.group5.springmvcweb.glassesweb.Service.impl.LensServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,8 +16,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/admin/lens")
 public class LensController {
-    @Autowired
-    private LensService lensService;
+
+    private final LensService lensService;
+    public LensController(LensService lensService) {
+        this.lensService = lensService;
+    }
 
     @PostMapping("/createlens")
     public LensResponse createLens(
