@@ -34,9 +34,15 @@ public class AuthService {
     public LoginResponse login(LoginRequest request) {
         Account user = accountRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new RuntimeException("User not found"));
-
+        
         if (!passwordEncoder.matches(request.getPassword(), user.getPasswordHash())) {
             throw new RuntimeException("Wrong password");
+        }
+        Customer customer = customerRepository.findById(user.getCustomerId())
+                .orElseThrow(() -> new RuntimeException("Customer not exist!"));
+
+        if ("BLOCKED".equals(customer.getStatus())) {
+            throw new RuntimeException("Account has been blocked!");
         }
 
         String token = jwtUtil.generateToken(user.getUsername(), user.getRole());

@@ -16,7 +16,9 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer accountId;
 
+    @Column(name = "customer_id")
     private Integer customerId;
+
     @Column(unique = true)
     private String username;
 
@@ -25,5 +27,6 @@ public class Account {
 
     private String role;
 
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 }

@@ -66,7 +66,7 @@ public class CustomerService {
 
         // Kiểm tra password cũ đúng không
         if (!passwordEncoder.matches(request.getOldPassword(), account.getPasswordHash())) {
-            throw new RuntimeException(" old Password is wrong!");
+            throw new RuntimeException("old Password is wrong!");
         }
 
         account.setPasswordHash(passwordEncoder.encode(request.getNewPassword()));
@@ -92,7 +92,7 @@ public class CustomerService {
         // Kiểm tra status hợp lệ
         List<String> validStatuses = List.of("ACTIVE", "BLOCKED");
         if (!validStatuses.contains(status)) {
-            throw new RuntimeException("Status không hợp lệ!");
+            throw new RuntimeException("Status not valid!");
         }
 
         Customer customer = customerRepository.findById(customerId)
