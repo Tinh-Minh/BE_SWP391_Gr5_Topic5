@@ -10,6 +10,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 public class CustomerService {
 
@@ -81,6 +83,22 @@ public class CustomerService {
         if (request.getPhone() != null) customer.setPhone(request.getPhone());
         if (request.getAddress() != null) customer.setAddress(request.getAddress());
 
+        customerRepository.save(customer);
+    }
+    // ===== Block/Activate user =====
+    @Transactional
+    public void updateStatus(Integer customerId, String status) {
+
+        // Kiểm tra status hợp lệ
+        List<String> validStatuses = List.of("ACTIVE", "BLOCKED");
+        if (!validStatuses.contains(status)) {
+            throw new RuntimeException("Status không hợp lệ!");
+        }
+
+        Customer customer = customerRepository.findById(customerId)
+                .orElseThrow(() -> new RuntimeException("Customer not exist!"));
+
+        customer.setStatus(status);
         customerRepository.save(customer);
     }
 }
