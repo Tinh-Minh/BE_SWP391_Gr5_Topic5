@@ -21,12 +21,12 @@ public class LensOption {
     @Column(name = "lens_option_id")
     private Integer lensOptionId;
 
-    @Column(name = "index_value")
+    @Column(name = "index_value", nullable = false)
     private String indexValue;
 
-    @Column(name = "coating")
+    @Column(name = "coating", nullable = false)
     private String coating;
 
-    @Column(name = "extra_price")
+    @Column(name = "extra_price", precision = 18, scale = 2, nullable = false)
     private BigDecimal extraPrice;
 }
