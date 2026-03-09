@@ -20,7 +20,7 @@ public class FrameController {
         this.frameService = frameService;
     }
 
-    @PostMapping("/createframes")
+    @PostMapping("/create")
     public FrameResponse createFrame(
             @Valid @RequestBody CreateFrameRequest request){
         Frame frame = frameService.createFrame(request);
@@ -43,7 +43,7 @@ public class FrameController {
     @PutMapping("/update/{id}")
     public FrameResponse updateFrame(
             @PathVariable Integer id,
-            @Valid @RequestBody UpdateFrameRequest request){
+            @RequestBody UpdateFrameRequest request){
         Frame frame = frameService.updateFrame(id, request);
         return FrameResponse.fromEntity(frame);
     }

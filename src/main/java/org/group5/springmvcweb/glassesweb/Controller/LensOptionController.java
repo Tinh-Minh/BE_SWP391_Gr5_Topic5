@@ -5,17 +5,11 @@ import org.group5.springmvcweb.glassesweb.DTO.CreateLensOptionRequest;
 import org.group5.springmvcweb.glassesweb.DTO.LensOptionResponse;
 import org.group5.springmvcweb.glassesweb.DTO.UpdateLensOptionRequest;
 import org.group5.springmvcweb.glassesweb.Entity.LensOption;
-import org.group5.springmvcweb.glassesweb.Repository.LensOptionRepository;
 import org.group5.springmvcweb.glassesweb.Service.LensOptionService;
-import org.group5.springmvcweb.glassesweb.Service.LensService;
-import org.group5.springmvcweb.glassesweb.Service.impl.LensOptionServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 
 @RestController
 @RequestMapping("/admin/lensoption")
@@ -46,7 +40,7 @@ public class LensOptionController {
 
     @PutMapping("/update/{id}")
     public LensOptionResponse update(@PathVariable Integer id,
-                                     @Valid @RequestBody UpdateLensOptionRequest request) {
+                                      @RequestBody UpdateLensOptionRequest request) {
         LensOption lensOption = service.update(id, request);
         return LensOptionResponse.fromEntity(lensOption);
     }

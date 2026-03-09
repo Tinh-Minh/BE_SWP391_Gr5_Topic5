@@ -7,8 +7,6 @@ import org.group5.springmvcweb.glassesweb.DTO.LensResponse;
 import org.group5.springmvcweb.glassesweb.DTO.UpdateLensRequest;
 import org.group5.springmvcweb.glassesweb.Entity.Lens;
 import org.group5.springmvcweb.glassesweb.Service.LensService;
-import org.group5.springmvcweb.glassesweb.Service.impl.LensServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -45,7 +43,7 @@ public class LensController {
     @PutMapping("/update/{id}")
     public LensResponse updateLens(
             @PathVariable Integer id,
-            @Valid @RequestBody UpdateLensRequest request){
+            @RequestBody UpdateLensRequest request){
 
         Lens lens = lensService.updateLens(id, request);
         return LensResponse.fromEntity(lens);

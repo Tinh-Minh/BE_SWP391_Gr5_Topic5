@@ -8,6 +8,7 @@ import org.group5.springmvcweb.glassesweb.Service.LensService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -22,6 +23,13 @@ public class LensServiceImpl implements LensService {
     //Create Lens
     @Override
     public Lens createLens(CreateLensRequest request){
+        validateLensData(
+                request.getBrand(),
+                request.getLensType(),
+                request.getMinSph(),
+                request.getMaxSph(),
+                request.getBasePrice()
+        );
         Lens lens = Lens.builder()
                 .brand(request.getBrand())
                 .lensType(request.getLensType())
@@ -53,11 +61,44 @@ public class LensServiceImpl implements LensService {
                 new RuntimeException("Khong tim thay"));
 
         //Set dữ liệu mới
-        lens.setBrand(request.getBrand());
-        lens.setLensType(request.getLensType());
-        lens.setMinSph(request.getMinSph());
-        lens.setMaxSph(request.getMaxSph());
-        lens.setBasePrice(request.getBasePrice());
+        BigDecimal newMinSph = request.getMinSph() != null ? request.getMinSph() : lens.getMinSph();
+        BigDecimal newMaxSph = request.getMaxSph() != null ? request.getMaxSph() : lens.getMaxSph();
+        BigDecimal newBasePrice = request.getBasePrice() != null ? request.getBasePrice() : lens.getBasePrice();
+
+        if (request.getBrand() != null) {
+            if (request.getBrand().trim().isEmpty()) {
+                throw new RuntimeException("Brand must not be blank");
+            }
+            lens.setBrand(request.getBrand().trim());
+        }
+
+        if (request.getLensType() != null) {
+            if (request.getLensType().trim().isEmpty()) {
+                throw new RuntimeException("Lens type must not be blank");
+            }
+            lens.setLensType(request.getLensType().trim());
+        }
+
+        if (newBasePrice == null || newBasePrice.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new RuntimeException("Base price must be greater than 0");
+        }
+
+        if (newMinSph != null && newMaxSph != null && newMinSph.compareTo(newMaxSph) > 0) {
+            throw new RuntimeException("minSph must be less than or equal to maxSph");
+        }
+
+        if (request.getMinSph() != null) {
+            lens.setMinSph(request.getMinSph());
+        }
+
+        if (request.getMaxSph() != null) {
+            lens.setMaxSph(request.getMaxSph());
+        }
+
+        if (request.getBasePrice() != null) {
+            lens.setBasePrice(request.getBasePrice());
+        }
+
         //lưu lại
         return lensRepository.save(lens);
     }
@@ -72,5 +113,20 @@ public class LensServiceImpl implements LensService {
 
     }
 
+    private void validateLensData(String brand, String lensType,
+                                  BigDecimal minSph, BigDecimal maxSph, BigDecimal basePrice){
+        if(brand == null || brand.trim().isEmpty()){
+            throw new RuntimeException("Brand must not be blank");
+        }
+        if(lensType == null || lensType.trim().isEmpty()){
+            throw new RuntimeException("LensType must not be blank");
+        }
+        if(basePrice == null || basePrice.compareTo(new BigDecimal(0)) <= 0){
+            throw new RuntimeException("Base Price must be greater than 0");
+        }
+        if(minSph != null && maxSph != null && minSph.compareTo(maxSph) > 0){
+            throw new RuntimeException("minSph must be less than or equal to maxSph");
+        }
+    }
 
 }
