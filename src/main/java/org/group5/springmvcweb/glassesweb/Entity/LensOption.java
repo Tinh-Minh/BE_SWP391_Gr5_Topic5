@@ -1,6 +1,9 @@
 package org.group5.springmvcweb.glassesweb.Entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,12 +24,15 @@ public class LensOption {
     @Column(name = "lens_option_id")
     private Integer lensOptionId;
 
-    @Column(name = "index_value", nullable = false)
+    @NotBlank(message = "Index value is required")
+    @Column(name = "index_value", nullable = false, length = 50)
     private String indexValue;
 
-    @Column(name = "coating", nullable = false)
+    @NotBlank(message = "Coating is required")
+    @Column(name = "coating", nullable = false, length = 100)
     private String coating;
 
+    @Positive(message = "Price must be > 0")
     @Column(name = "extra_price", precision = 18, scale = 2, nullable = false)
     private BigDecimal extraPrice;
 }

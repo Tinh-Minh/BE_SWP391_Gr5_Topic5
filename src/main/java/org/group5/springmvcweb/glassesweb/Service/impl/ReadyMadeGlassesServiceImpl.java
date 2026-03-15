@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class ReadyMadeGlassesServiceImpl implements ReadyMadeGlassesService {
@@ -23,7 +22,8 @@ public class ReadyMadeGlassesServiceImpl implements ReadyMadeGlassesService {
     private final LensRepository lensRepository;
 
     public ReadyMadeGlassesServiceImpl(ReadyMadeGlassesRepository readyMadeGlassesRepository,
-                                       FrameRepository frameRepository, LensRepository lensRepository) {
+                                       FrameRepository frameRepository,
+                                       LensRepository lensRepository) {
         this.readyMadeGlassesRepository = readyMadeGlassesRepository;
         this.frameRepository = frameRepository;
         this.lensRepository = lensRepository;
@@ -31,29 +31,43 @@ public class ReadyMadeGlassesServiceImpl implements ReadyMadeGlassesService {
 
     @Override
     public ReadyMadeGlasses create(CreateReadyMadeGlassesRequest request) {
-            Frame frame = frameRepository.findById(request.getFrameId())
-                    .orElseThrow(() -> new RuntimeException("Frame not found with id " + request.getFrameId()));
-            Lens lens = lensRepository.findById(request.getLensId())
-                    .orElseThrow(() -> new RuntimeException("Lens not found with id " + request.getLensId()));
-            ValidateReadyMadeGlassesData(
-                    request.getFixedPrescription(),
-                    request.getPrice(),
-                    lens
-            );
-            ReadyMadeGlasses readyMadeGlasses = ReadyMadeGlasses.builder()
-                    .readyGlassesId(generateReadyMadeGlassesId())
-                    .frameId(frame.getFrameId())
-                    .lensId(lens.getLensId())
-                    .fixedPrescription(request.getFixedPrescription())
-                    .price(request.getPrice())
-                    .build();
-            return  readyMadeGlassesRepository.save(readyMadeGlasses);
+        Frame frame = frameRepository.findById(request.getFrameId())
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy gọng kính với id " + request.getFrameId()));
+
+        Lens lens = lensRepository.findById(request.getLensId())
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy tròng kính với id " + request.getLensId()));
+
+        validateReadyMadeGlassesData(
+                request.getName(),
+                request.getFixedSph(),
+                request.getFixedCyl(),
+                request.getPrice(),
+                request.getStock(),
+                request.getStatus(),
+                lens
+        );
+
+        ReadyMadeGlasses readyMadeGlasses = ReadyMadeGlasses.builder()
+                .name(request.getName().trim())
+                .frameId(frame.getFrameId())
+                .lensId(lens.getLensId())
+                .fixedSph(request.getFixedSph())
+                .fixedCyl(request.getFixedCyl())
+                .imageUrl(request.getImageUrl())
+                .price(request.getPrice())
+                .stock(request.getStock() != null ? request.getStock() : 0)
+                .status((request.getStatus() == null || request.getStatus().trim().isEmpty())
+                        ? "ACTIVE"
+                        : request.getStatus().trim().toUpperCase())
+                .build();
+
+        return readyMadeGlassesRepository.save(readyMadeGlasses);
     }
 
     @Override
-    public ReadyMadeGlasses getById(String id) {
-        return readyMadeGlassesRepository.findById(id).orElseThrow(() ->
-                new RuntimeException("ReadyMadeGlasses not found with id " + id));
+    public ReadyMadeGlasses getById(Integer id) {
+        return readyMadeGlassesRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy kính có sẵn với id " + id));
     }
 
     @Override
@@ -62,65 +76,93 @@ public class ReadyMadeGlassesServiceImpl implements ReadyMadeGlassesService {
     }
 
     @Override
-    public ReadyMadeGlasses update(String id, UpdateReadyMadeGlassesRequest request) {
+    public ReadyMadeGlasses update(Integer id, UpdateReadyMadeGlassesRequest request) {
         ReadyMadeGlasses entity = readyMadeGlassesRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Ready-made glasses not found with id " + id));
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy kính có sẵn với id " + id));
 
         Integer newFrameId = request.getFrameId() != null ? request.getFrameId() : entity.getFrameId();
         Integer newLensId = request.getLensId() != null ? request.getLensId() : entity.getLensId();
-        String newFixedPrescription = request.getFixedPrescription() != null
-                ? request.getFixedPrescription()
-                : entity.getFixedPrescription();
-        BigDecimal newPrice = request.getPrice() != null ? request.getPrice() : entity.getPrice();
 
         Frame frame = frameRepository.findById(newFrameId)
-                .orElseThrow(() -> new RuntimeException("Frame not found with id " + newFrameId));
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy gọng kính với id " + newFrameId));
 
         Lens lens = lensRepository.findById(newLensId)
-                .orElseThrow(() -> new RuntimeException("Lens not found with id " + newLensId));
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy tròng kính với id " + newLensId));
 
-        ValidateReadyMadeGlassesData(newFixedPrescription, newPrice, lens);
+        String newName = request.getName() != null ? request.getName() : entity.getName();
+        BigDecimal newFixedSph = request.getFixedSph() != null ? request.getFixedSph() : entity.getFixedSph();
+        BigDecimal newFixedCyl = request.getFixedCyl() != null ? request.getFixedCyl() : entity.getFixedCyl();
+        BigDecimal newPrice = request.getPrice() != null ? request.getPrice() : entity.getPrice();
+        Integer newStock = request.getStock() != null ? request.getStock() : entity.getStock();
+        String newStatus = request.getStatus() != null ? request.getStatus() : entity.getStatus();
 
-        if (request.getFrameId() != null) {
-            entity.setFrameId(frame.getFrameId());
-        }
+        validateReadyMadeGlassesData(
+                newName,
+                newFixedSph,
+                newFixedCyl,
+                newPrice,
+                newStock,
+                newStatus,
+                lens
+        );
 
-        if (request.getLensId() != null) {
-            entity.setLensId(lens.getLensId());
-        }
+        entity.setName(newName.trim());
+        entity.setFrameId(frame.getFrameId());
+        entity.setLensId(lens.getLensId());
+        entity.setFixedSph(newFixedSph);
+        entity.setFixedCyl(newFixedCyl);
+        entity.setPrice(newPrice);
+        entity.setStock(newStock);
+        entity.setStatus(newStatus != null ? newStatus.trim().toUpperCase() : entity.getStatus());
 
-        if (request.getFixedPrescription() != null) {
-            entity.setFixedPrescription(request.getFixedPrescription().trim());
-        }
-
-        if (request.getPrice() != null) {
-            entity.setPrice(request.getPrice());
+        if (request.getImageUrl() != null) {
+            entity.setImageUrl(request.getImageUrl());
         }
 
         return readyMadeGlassesRepository.save(entity);
     }
 
     @Override
-    public void delete(String id) {
+    public void delete(Integer id) {
         if (!readyMadeGlassesRepository.existsById(id)) {
-            throw new RuntimeException("ReadyMadeGlasses not found with id " + id);
+            throw new RuntimeException("Không tìm thấy kính có sẵn với id " + id);
         }
         readyMadeGlassesRepository.deleteById(id);
     }
 
-    private void ValidateReadyMadeGlassesData(String fixedPrescription, BigDecimal price, Lens lens) {
-        if(fixedPrescription == null || fixedPrescription.trim().isEmpty()){
-            throw new RuntimeException("Fixed prescription must not be blank");
+    private void validateReadyMadeGlassesData(String name,
+                                              BigDecimal fixedSph,
+                                              BigDecimal fixedCyl,
+                                              BigDecimal price,
+                                              Integer stock,
+                                              String status,
+                                              Lens lens) {
+        if (name == null || name.trim().isEmpty()) {
+            throw new RuntimeException("Tên kính có sẵn không được để trống");
         }
-        if(price == null || price.compareTo(BigDecimal.ZERO) <= 0){
-            throw new RuntimeException("Price must be greater than zero");
-        }
-        if(lens.getLensType() != null && lens.getLensType().trim().equalsIgnoreCase("contact lens")){
-            throw new RuntimeException("Contact lens cannot be used for ready-made glasses");
-        }
-    }
 
-    private String generateReadyMadeGlassesId() {
-        return "RMG-"+UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+        if (price == null) {
+            throw new RuntimeException("Giá không được để trống");
+        }
+
+        if (price.compareTo(BigDecimal.ZERO) < 0) {
+            throw new RuntimeException("Giá phải lớn hơn hoặc bằng 0");
+        }
+
+        if (stock != null && stock < 0) {
+            throw new RuntimeException("Số lượng tồn kho phải lớn hơn hoặc bằng 0");
+        }
+
+        if (status != null) {
+            String normalizedStatus = status.trim().toUpperCase();
+            if (!normalizedStatus.equals("ACTIVE") && !normalizedStatus.equals("INACTIVE")) {
+                throw new RuntimeException("Trạng thái chỉ được là ACTIVE hoặc INACTIVE");
+            }
+        }
+
+        if (lens.getLensType() != null
+                && lens.getLensType().equalsIgnoreCase("CONTACT_LENS")) {
+            throw new RuntimeException("Không thể dùng contact lens cho kính có sẵn");
+        }
     }
 }

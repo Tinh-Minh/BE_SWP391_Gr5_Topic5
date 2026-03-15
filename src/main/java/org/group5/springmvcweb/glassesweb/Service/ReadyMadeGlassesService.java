@@ -10,9 +10,9 @@ import java.util.List;
 public interface ReadyMadeGlassesService {
 
     ReadyMadeGlasses create(CreateReadyMadeGlassesRequest request);
-    ReadyMadeGlasses getById(String id);
+    ReadyMadeGlasses getById(Integer id);
     List<ReadyMadeGlasses> getAll();
-    ReadyMadeGlasses update(String id, UpdateReadyMadeGlassesRequest request);
-    void delete(String id);
+    ReadyMadeGlasses update(Integer id, UpdateReadyMadeGlassesRequest request);
+    void delete(Integer id);
 
 }

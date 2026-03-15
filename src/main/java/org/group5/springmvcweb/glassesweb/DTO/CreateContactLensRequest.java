@@ -8,30 +8,31 @@ import lombok.Data;
 import java.math.BigDecimal;
 
 @Data
-public class CreateLensRequest {
+public class CreateContactLensRequest {
     @NotBlank(message = "Name is required")
     private String name;
 
     private String brand;
 
-    private String lensType;
+    private String contactType;
 
-    private Boolean colorChange;
-
-    private String lensSize;
+    private String color;
 
     private BigDecimal minSph;
 
     private BigDecimal maxSph;
 
+    private BigDecimal minCyl;
+
+    private BigDecimal maxCyl;
+
     private String imageUrl;
 
-    @Positive(message = "Base price must be > 0")
-    private BigDecimal basePrice;
+    @Positive(message = "Price must be > 0")
+    private BigDecimal price;
 
     @Min(value = 0, message = "Stock must be >= 0")
     private Integer stock;
 
     private String status;
-
 }

@@ -13,5 +13,4 @@ public interface LensOptionService {
     void delete(Integer id);
     LensOption getById(Integer id);
     List<LensOption> getAll();
-
 }

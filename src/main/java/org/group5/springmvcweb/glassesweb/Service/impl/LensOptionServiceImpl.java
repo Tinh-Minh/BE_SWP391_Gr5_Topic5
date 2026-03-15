@@ -1,6 +1,5 @@
 package org.group5.springmvcweb.glassesweb.Service.impl;
 
-import jakarta.validation.constraints.NotNull;
 import org.group5.springmvcweb.glassesweb.DTO.CreateLensOptionRequest;
 import org.group5.springmvcweb.glassesweb.DTO.UpdateLensOptionRequest;
 import org.group5.springmvcweb.glassesweb.Entity.LensOption;
@@ -20,7 +19,7 @@ public class LensOptionServiceImpl implements LensOptionService {
         this.repository = repository;
     }
 
-
+    // Create
     @Override
     public LensOption create(CreateLensOptionRequest request) {
         validateLensOptionData(
@@ -28,35 +27,39 @@ public class LensOptionServiceImpl implements LensOptionService {
                 request.getCoating(),
                 request.getExtraPrice()
         );
-        LensOption lens = LensOption.builder()
+
+        LensOption lensOption = LensOption.builder()
                 .indexValue(request.getIndexValue())
                 .coating(request.getCoating())
                 .extraPrice(request.getExtraPrice())
                 .build();
-        return repository.save(lens);
+
+        return repository.save(lensOption);
     }
 
+    // Update
     @Override
     public LensOption update(Integer id, UpdateLensOptionRequest request) {
-        LensOption lensOption = repository.findById(id).orElseThrow(() ->
-                new RuntimeException("LensOption not found with id " + id));
+        LensOption lensOption = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy tùy chọn tròng kính"));
+
         if (request.getIndexValue() != null) {
             if (request.getIndexValue().trim().isEmpty()) {
-                throw new RuntimeException("Index value must not be blank");
+                throw new RuntimeException("Chiết suất không được để trống");
             }
             lensOption.setIndexValue(request.getIndexValue().trim());
         }
 
         if (request.getCoating() != null) {
             if (request.getCoating().trim().isEmpty()) {
-                throw new RuntimeException("Coating must not be blank");
+                throw new RuntimeException("Lớp phủ không được để trống");
             }
             lensOption.setCoating(request.getCoating().trim());
         }
 
         if (request.getExtraPrice() != null) {
             if (request.getExtraPrice().compareTo(BigDecimal.ZERO) < 0) {
-                throw new RuntimeException("Extra price must be greater than or equal to 0");
+                throw new RuntimeException("Phụ phí phải lớn hơn hoặc bằng 0");
             }
             lensOption.setExtraPrice(request.getExtraPrice());
         }
@@ -64,36 +67,40 @@ public class LensOptionServiceImpl implements LensOptionService {
         return repository.save(lensOption);
     }
 
+    // Delete
     @Override
     public void delete(Integer id) {
-        if(!repository.existsById(id)) {
-            throw new RuntimeException("LensOption not found with id " + id);
+        if (!repository.existsById(id)) {
+            throw new RuntimeException("Không tìm thấy tùy chọn tròng kính");
         }
         repository.deleteById(id);
     }
 
+    // Get by id
     @Override
     public LensOption getById(Integer id) {
-        return repository.findById(id).orElseThrow(() ->
-                new RuntimeException("LensOption not found with id " + id));
+        return repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy tùy chọn tròng kính"));
     }
 
+    // Get all
     @Override
     public List<LensOption> getAll() {
         return repository.findAll();
     }
 
-    private void validateLensOptionData(String indexValue, String coating, @NotNull BigDecimal extraPrice) {
+    // Validate create
+    private void validateLensOptionData(String indexValue, String coating, BigDecimal extraPrice) {
         if (indexValue == null || indexValue.trim().isEmpty()) {
-            throw new RuntimeException("Index value must not be blank");
+            throw new RuntimeException("Chiết suất không được để trống");
         }
 
         if (coating == null || coating.trim().isEmpty()) {
-            throw new RuntimeException("Coating must not be blank");
+            throw new RuntimeException("Lớp phủ không được để trống");
         }
 
-        if (extraPrice == null || extraPrice.compareTo(new BigDecimal(0)) < 0) {
-            throw new RuntimeException("Extra price must be greater than or equal to 0");
+        if (extraPrice != null && extraPrice.compareTo(BigDecimal.ZERO) < 0) {
+            throw new RuntimeException("Phụ phí phải lớn hơn hoặc bằng 0");
         }
     }
 }
