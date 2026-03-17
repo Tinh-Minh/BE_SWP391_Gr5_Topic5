@@ -33,7 +33,7 @@ public class UpdateDiscountRequest {
     private LocalDateTime endDate;
 
     @Pattern(
-            regexp = "^(ACTIVE|INACTIVE)?$",
+            regexp = "^(ACTIVE|INACTIVE)$",
             message = "Trạng thái chỉ được là ACTIVE hoặc INACTIVE"
     )
     private String status;

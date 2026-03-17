@@ -26,13 +26,13 @@ public class CreateFrameRequest {
     private String size;
 
     @Pattern(
-            regexp = "^(FULL|HALF|RIMLESS)?$}",
+            regexp = "^(FULL|HALF|RIMLESS)$",
             message = "Kích thước chỉ được là FULL, HALF hoặc RIMLESS"
     )
     private String rimType;
 
     @Pattern(
-            regexp = "^(EYEGLASSES|SUNGLASSES)?$",
+            regexp = "^(EYEGLASSES|SUNGLASSES)$",
             message = "Loại gọng chỉ được là EYEGLASSES hoặc SUNGLASSES"
     )
     private String frameType;
@@ -48,7 +48,7 @@ public class CreateFrameRequest {
     private Integer stock;
 
     @Pattern(
-            regexp = "^(ACTIVE|INACTIVE)?$",
+            regexp = "^(ACTIVE|INACTIVE)$",
             message = "Trạng thái chỉ được là ACTIVE hoặc INACTIVE"
     )
     private String status;
