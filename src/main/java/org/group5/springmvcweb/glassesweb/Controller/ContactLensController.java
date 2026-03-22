@@ -79,4 +79,12 @@ public class ContactLensController {
                 .map(ContactLensResponse::fromEntity)
                 .toList();
     }
+
+    @GetMapping("/public/all")
+    public List<ContactLensResponse> getAllPublic() {
+        return contactLensService.getAllContactLens().stream()
+                .filter(p -> "ACTIVE".equals(p.getStatus()))
+                .map(ContactLensResponse::fromEntity)
+                .toList();
+    }
 }

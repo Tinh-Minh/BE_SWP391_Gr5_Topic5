@@ -17,6 +17,25 @@ import java.util.List;
 @Service
 public class ReadyMadeGlassesServiceImpl implements ReadyMadeGlassesService {
 
+    @Override
+    public List<ReadyMadeGlasses> search(String name, String status,
+                                         BigDecimal minPrice, BigDecimal maxPrice) {
+        return readyMadeGlassesRepository.findAll().stream()
+                .filter(item -> name == null
+                        || (item.getName() != null
+                        && item.getName().toLowerCase().contains(name.toLowerCase())))
+                .filter(item -> status == null
+                        || (item.getStatus() != null
+                        && item.getStatus().equalsIgnoreCase(status)))
+                .filter(item -> minPrice == null
+                        || (item.getPrice() != null
+                        && item.getPrice().compareTo(minPrice) >= 0))
+                .filter(item -> maxPrice == null
+                        || (item.getPrice() != null
+                        && item.getPrice().compareTo(maxPrice) <= 0))
+                .toList();
+    }
+
     private final ReadyMadeGlassesRepository readyMadeGlassesRepository;
     private final FrameRepository frameRepository;
     private final LensRepository lensRepository;

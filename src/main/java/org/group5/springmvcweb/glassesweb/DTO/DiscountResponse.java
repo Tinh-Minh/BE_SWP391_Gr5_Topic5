@@ -2,11 +2,9 @@ package org.group5.springmvcweb.glassesweb.DTO;
 
 import lombok.Builder;
 import lombok.Data;
-
+import org.group5.springmvcweb.glassesweb.Entity.Discount;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import org.group5.springmvcweb.glassesweb.entity.Discount;
-
 
 @Data
 @Builder

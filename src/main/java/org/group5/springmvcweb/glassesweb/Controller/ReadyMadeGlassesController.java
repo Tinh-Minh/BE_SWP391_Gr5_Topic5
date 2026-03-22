@@ -52,4 +52,12 @@ public class ReadyMadeGlassesController {
         service.delete(id);
         return "Xóa kính có sẵn thành công";
     }
+
+    @GetMapping("/public/all")
+    public List<ReadyMadeGlassesResponse> getAllPublic() {
+        return service.getAll().stream()
+                .filter(p -> "ACTIVE".equals(p.getStatus()))
+                .map(ReadyMadeGlassesResponse::fromEntity)
+                .toList();
+    }
 }

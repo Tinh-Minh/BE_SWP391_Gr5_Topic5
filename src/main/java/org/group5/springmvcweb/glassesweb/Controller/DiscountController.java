@@ -5,9 +5,8 @@ import org.group5.springmvcweb.glassesweb.DTO.CreateDiscountRequest;
 import org.group5.springmvcweb.glassesweb.DTO.DiscountResponse;
 import org.group5.springmvcweb.glassesweb.DTO.UpdateDiscountRequest;
 import org.group5.springmvcweb.glassesweb.Service.DiscountService;
+import org.group5.springmvcweb.glassesweb.Entity.Discount;
 import org.springframework.web.bind.annotation.*;
-import org.group5.springmvcweb.glassesweb.entity.Discount;
-
 import java.util.List;
 
 @RestController
@@ -20,20 +19,17 @@ public class DiscountController {
         this.discountService = discountService;
     }
 
-    // Create
     @PostMapping("/create")
     public DiscountResponse create(@Valid @RequestBody CreateDiscountRequest request) {
         Discount discount = discountService.create(request);
         return DiscountResponse.fromEntity(discount);
     }
 
-    // Read by id
     @GetMapping("/{id}")
     public DiscountResponse getById(@PathVariable Integer id) {
         return DiscountResponse.fromEntity(discountService.getById(id));
     }
 
-    // Read all
     @GetMapping("/all")
     public List<DiscountResponse> getAll() {
         return discountService.getAll()
@@ -42,7 +38,6 @@ public class DiscountController {
                 .toList();
     }
 
-    // Update
     @PutMapping("/update/{id}")
     public DiscountResponse update(@PathVariable Integer id,
                                    @Valid @RequestBody UpdateDiscountRequest request) {
@@ -50,7 +45,6 @@ public class DiscountController {
         return DiscountResponse.fromEntity(discount);
     }
 
-    // Delete
     @DeleteMapping("/delete/{id}")
     public String delete(@PathVariable Integer id) {
         discountService.delete(id);

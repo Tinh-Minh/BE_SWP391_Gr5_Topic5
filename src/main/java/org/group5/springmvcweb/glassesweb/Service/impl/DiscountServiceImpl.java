@@ -4,7 +4,7 @@ import org.group5.springmvcweb.glassesweb.DTO.CreateDiscountRequest;
 import org.group5.springmvcweb.glassesweb.DTO.UpdateDiscountRequest;
 import org.group5.springmvcweb.glassesweb.Repository.DiscountRepository;
 import org.group5.springmvcweb.glassesweb.Service.DiscountService;
-import org.group5.springmvcweb.glassesweb.entity.Discount;
+import org.group5.springmvcweb.glassesweb.Entity.Discount;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -30,7 +30,7 @@ public class DiscountServiceImpl implements DiscountService {
                 request.getStartDate(),
                 request.getEndDate(),
                 request.getStatus() == null || request.getStatus().trim().isEmpty()
-                ? "ACTIVE" : request.getStatus().trim().toUpperCase()
+                        ? "ACTIVE" : request.getStatus().trim().toUpperCase()
         );
         if(repo.existsByCode(request.getCode().trim())){
             throw new RuntimeException("Code đã tồn tại");

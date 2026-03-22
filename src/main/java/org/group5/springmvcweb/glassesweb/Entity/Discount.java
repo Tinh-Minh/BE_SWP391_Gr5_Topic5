@@ -1,13 +1,12 @@
-package org.group5.springmvcweb.glassesweb.entity;
+package org.group5.springmvcweb.glassesweb.Entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "Discount")
+@Table(name = "discount")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -24,7 +23,7 @@ public class Discount {
     private String code;
 
     @Column(name = "discount_type", length = 50)
-    private String discountType; // COUPON, QUANTITY
+    private String discountType;
 
     @Column(name = "discount_value", precision = 5, scale = 2)
     private BigDecimal discountValue;
@@ -42,5 +41,5 @@ public class Discount {
     private LocalDateTime endDate;
 
     @Column(name = "status", length = 50)
-    private String status; // ACTIVE, INACTIVE
+    private String status;
 }

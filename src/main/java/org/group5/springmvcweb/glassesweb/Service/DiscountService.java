@@ -2,7 +2,7 @@ package org.group5.springmvcweb.glassesweb.Service;
 
 import org.group5.springmvcweb.glassesweb.DTO.CreateDiscountRequest;
 import org.group5.springmvcweb.glassesweb.DTO.UpdateDiscountRequest;
-import org.group5.springmvcweb.glassesweb.entity.Discount;
+import org.group5.springmvcweb.glassesweb.Entity.Discount;
 
 import java.util.List;
 

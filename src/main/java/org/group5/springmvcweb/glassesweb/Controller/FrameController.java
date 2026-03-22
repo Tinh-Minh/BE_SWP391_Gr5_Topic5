@@ -21,6 +21,14 @@ public class FrameController {
         this.frameService = frameService;
     }
 
+    @GetMapping("/public/all")
+    public List<FrameResponse> getAllPublic() {
+        return frameService.getAllFrames().stream()
+                .filter(f -> "ACTIVE".equals(f.getStatus()))
+                .map(FrameResponse::fromEntity)
+                .toList();
+    }
+
     @PostMapping("/create")
     public FrameResponse createFrame(
             @Valid @RequestBody CreateFrameRequest request){

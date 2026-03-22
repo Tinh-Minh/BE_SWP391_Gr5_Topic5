@@ -21,6 +21,14 @@ public class LensController {
         this.lensService = lensService;
     }
 
+    @GetMapping("/public/all")
+    public List<LensResponse> getAllPublic() {
+        return lensService.getAllLens().stream()
+                .filter(l -> "ACTIVE".equals(l.getStatus()))
+                .map(LensResponse::fromEntity)
+                .toList();
+    }
+
     @PostMapping("/create")
     public LensResponse createLens(@Valid @RequestBody CreateLensRequest request) {
         Lens lens = lensService.createLens(request);
