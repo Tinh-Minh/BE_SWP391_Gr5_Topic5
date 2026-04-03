@@ -2,6 +2,8 @@ package org.group5.springmvcweb.glassesweb.security;
 
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
+import org.group5.springmvcweb.glassesweb.Entity.Account;
+import org.group5.springmvcweb.glassesweb.Repository.AccountRepository;
 import org.group5.springmvcweb.glassesweb.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -18,6 +20,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Autowired
     private JwtUtil jwtUtil;
+
+    @Autowired // ✅ thêm AccountRepository
+    private AccountRepository accountRepository;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -36,16 +41,25 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 String username = jwtUtil.extractUsername(token);
                 String role = jwtUtil.extractRole(token);
 
-                UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(
-                                username,
-                                null,
-                                Collections.singleton(
-                                        new SimpleGrantedAuthority( "ROLE_" + role)
-                                )
-                        );
+                // ✅ Load Account để tạo UserPrincipal
+                Account account = accountRepository
+                        .findByUsername(username).orElse(null);
 
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+                if (account != null) {
+                    // ✅ Dùng UserPrincipal thay vì username String
+                    UserPrincipal userPrincipal = UserPrincipal.from(account);
+
+                    UsernamePasswordAuthenticationToken authentication =
+                            new UsernamePasswordAuthenticationToken(
+                                    userPrincipal, // ✅ principal là UserPrincipal
+                                    null,
+                                    Collections.singleton(
+                                            new SimpleGrantedAuthority("ROLE_" + role)
+                                    )
+                            );
+
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                }
             }
         }
 

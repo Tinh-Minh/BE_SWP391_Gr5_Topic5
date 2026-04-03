@@ -2,12 +2,9 @@ package org.group5.springmvcweb.glassesweb.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.*;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.group5.springmvcweb.glassesweb.Entity.Account;
 import org.group5.springmvcweb.glassesweb.Repository.AccountRepository;
-
-import java.util.Collections;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
@@ -23,12 +20,6 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .orElseThrow(() ->
                         new UsernameNotFoundException("User not found"));
 
-        return new User(
-                account.getUsername(),
-                account.getPasswordHash(),   
-                Collections.singleton(
-                        new SimpleGrantedAuthority("ROLE_" + account.getRole())
-                )
-        );
+        return UserPrincipal.from(account);
     }
 }

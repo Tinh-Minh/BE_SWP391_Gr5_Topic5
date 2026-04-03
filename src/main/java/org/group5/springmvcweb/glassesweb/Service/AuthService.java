@@ -29,36 +29,18 @@ public class AuthService {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
-    //===== LOGIN =====
-
-    public LoginResponse login(LoginRequest request) {
-        Account user = accountRepository.findByUsername(request.getUsername())
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
-        if (!passwordEncoder.matches(request.getPassword(), user.getPasswordHash())) {
-            throw new RuntimeException("Wrong password");
-        }
-
-        String token = jwtUtil.generateToken(user.getUsername(), user.getRole());
-        return new LoginResponse(token);
-    }
-
     // ===== REGISTER =====
-
     @Transactional
     public RegisterResponse register(RegisterRequest request) {
 
-        // 1. Kiểm tra username đã tồn tại chưa
         if (accountRepository.existsByUsername(request.getUsername())) {
-            throw new RuntimeException("Username đã tồn tại!");
+            throw new RuntimeException("Username already exists!");
         }
-
-        // 2. Kiểm tra email đã tồn tại chưa
         if (customerRepository.existsByEmail(request.getEmail())) {
             throw new RuntimeException("Email already exists!");
         }
 
-        // 3. Tạo Customer trước (vì Account cần customerId)
+        // Tạo Customer trước
         Customer customer = new Customer();
         customer.setName(request.getName());
         customer.setEmail(request.getEmail());
@@ -67,13 +49,13 @@ public class AuthService {
         customer.setStatus("ACTIVE");
         Customer savedCustomer = customerRepository.save(customer);
 
-        // 4. Tạo Account liên kết với Customer vừa tạo
-        Account account = new Account();
-        account.setCustomerId(savedCustomer.getCustomerId());
-        account.setUsername(request.getUsername());
-        account.setPasswordHash(passwordEncoder.encode(request.getPassword()));
-        account.setRole("USER");
-        account.setCreatedAt(LocalDateTime.now());
+        // ✅ Dùng relationship thay vì setCustomerId
+        Account account = Account.builder()
+                .customer(savedCustomer)
+                .username(request.getUsername())
+                .passwordHash(passwordEncoder.encode(request.getPassword()))
+                .role("USER")
+                .build();
         Account savedAccount = accountRepository.save(account);
 
         return new RegisterResponse(
@@ -84,6 +66,24 @@ public class AuthService {
         );
     }
 
+    // ===== LOGIN =====
+    public LoginResponse login(LoginRequest request) {
+        Account account = accountRepository.findByUsername(request.getUsername())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (!passwordEncoder.matches(request.getPassword(), account.getPasswordHash())) {
+            throw new RuntimeException("Wrong password");
+        }
+
+        // ✅ Kiểm tra BLOCKED qua relationship
+        if (account.getCustomer() != null &&
+                "BLOCKED".equals(account.getCustomer().getStatus())) {
+            throw new RuntimeException("Account has been blocked!");
+        }
+
+        String token = jwtUtil.generateToken(account.getUsername(), account.getRole());
+        return new LoginResponse(token);
+    }
     public void updateRole(Integer accountId, String newRole) {
 
         // Kiểm tra role hợp lệ

@@ -27,6 +27,12 @@ public class CustomerController {
         return ResponseEntity.ok(Map.of("message", "Cập nhật thông tin thành công!"));
     }
 
+    @GetMapping("/profile")
+    public ResponseEntity<?> getProfile(Authentication authentication) {
+        return ResponseEntity.ok(
+                customerService.getProfile(authentication.getName()));
+    }
+
     // Đổi email
     @PutMapping("/change-email")
     public ResponseEntity<Map<String, String>> changeEmail(

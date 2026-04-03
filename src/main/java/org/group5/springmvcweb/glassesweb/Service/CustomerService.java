@@ -22,14 +22,34 @@ public class CustomerService {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
+    public CustomerProfileResponse getProfile(String username) {
+        Account account = accountRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Account not found!"));
+        Customer customer = account.getCustomer();
+        return new CustomerProfileResponse(
+                account.getAccountId(),
+                account.getUsername(),
+                account.getRole(),
+                customer.getCustomerId(),
+                customer.getName(),
+                customer.getEmail(),
+                customer.getPhone(),
+                customer.getAddress(),
+                customer.getStatus()
+        );
+    }
+
     // ===== Lấy thông tin Customer từ username =====
     private Customer getCustomerByUsername(String username) {
         Account account = accountRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("Account không tồn tại!"));
-        return customerRepository.findById(account.getCustomerId())
-                .orElseThrow(() -> new RuntimeException("Customer không tồn tại!"));
-    }
+                .orElseThrow(() -> new RuntimeException("Account not exist!"));
 
+        // Dùng relationship thay vì findById(customerId)
+        if (account.getCustomer() == null) {
+            throw new RuntimeException("Customer not exist!");
+        }
+        return account.getCustomer();
+    }
     // ===== Cập nhật thông tin cá nhân =====
     @Transactional
     public void updateProfile(String username, UpdateProfileRequest request) {
